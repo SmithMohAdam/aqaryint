@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"aqaryint/aqaryint/src/models"
+	"aqaryint/src/models"
 	"encoding/json"
 	"net/http"
 
@@ -15,6 +15,7 @@ func PostMethod(c *gin.Context) {
 	})
 }
 
+// CreateTable
 func AddUser(c *gin.Context) {
 
 	user := &models.User{}
@@ -22,5 +23,11 @@ func AddUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"Data": string(j),
+	})
+}
+func CreateTable(c *gin.Context) {
+
+	c.JSON(http.StatusOK, gin.H{
+		"Data": string("Table been created successfuly"),
 	})
 }
