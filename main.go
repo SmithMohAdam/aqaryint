@@ -1,60 +1,34 @@
 package main
 
 import (
-	config "aqaryint/src/configs"
 	"aqaryint/src/controllers"
-	"fmt"
+	"aqaryint/src/database"
+	"aqaryint/src/repositories"
+	"aqaryint/src/services"
+	"log"
 
 	"github.com/gin-gonic/gin"
-	postgres "gorm.io/driver/postgres"
-
-	"gorm.io/gorm"
 )
-
-var db *gorm.DB
 
 func main() {
 
-	config.Appconfig = config.GetConfig()
-	NewRouter()
-
-}
-
-func Init() {
-	router := NewRouter()
-	router.Run(config.Appconfig.GetString("server.port"))
-}
-func NewRouter() *gin.Engine {
-	router := gin.New()
-	//router.Handler()
-
-	{
-		router.POST("/limitedPostMethod", controllers.PostMethod)
-		router.POST("/add-user", controllers.AddUser)//controller.CreateAccount
-		router.POST("/createTables", controllers.CreateTable)
-	}
-	return router
-}
-
-func initDataBase() {
-
-	username := config.Appconfig.GetString("database.username")
-	password := config.Appconfig.GetString("database.password")
-	dbName := config.Appconfig.GetString("database.name")
-	dbHost := config.Appconfig.GetString("database.host")
-
-	dbUri := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", dbHost, username, dbName, password)
-	fmt.Println(dbUri)
-
-	conn, err := gorm.Open(postgres.Open(dbUri), &gorm.Config{})
+	//config.Appconfig = config.GetConfig()
+	err := database.Connect()
 	if err != nil {
-		fmt.Print(err)
+		log.Fatal(err)
 	}
 
-	db = conn
+	studantRepository := repositories.NewStudantRepository(database.DB)
+	studantService := services.NewStudentService(studantRepository)
+	studantController := controllers.NewStudentController(studantService)
 
-}
+	r := gin.Default()
 
-func GetDB() *gorm.DB {
-	return db
+	r.POST("/users", studantController.CreateStudent)
+	r.GET("/users/:id", studantController.GetStudent)
+	r.PUT("/users/:id", studantController.UpdateStudent)
+	r.DELETE("/users/:id", studantController.DeleteStudent)
+
+	r.Run(":8080")
+
 }

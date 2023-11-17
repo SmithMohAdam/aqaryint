@@ -2,10 +2,11 @@ version: 1.0.0
 
 
 server:
-    port: ':7004'
+    port: ':8080'
 database:
-     host: 'localhost'
-     port: 3306
-     username: 'admin'
-     password: '123'
-     name: 'demo_db'
+    host: 'localhost'
+    port: 5432
+    username: 'postgres'
+    password: 'smith'
+    name: 'postgres'
+    sslmode: 'disable'
