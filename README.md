@@ -27,7 +27,7 @@ DELETE /users/id
 
 
 Send a JSON payload in the request body with the following format:
-## POST All /users
+## POST  /users
 {
   "name": "John Doe",
   "age": 20,
